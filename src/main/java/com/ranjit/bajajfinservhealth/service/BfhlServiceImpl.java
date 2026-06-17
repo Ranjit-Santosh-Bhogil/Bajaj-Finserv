@@ -57,14 +57,12 @@ public class BfhlServiceImpl implements BfhlService {
                 specialCharacters.add(trimmed);
             } else if (isAlphanumeric(trimmed)) {
                 // Extract alphabets and numbers
-                StringBuilder alphaPart = new StringBuilder();
                 for (char c : trimmed.toCharArray()) {
                     if (Character.isLetter(c)) {
-                        alphaPart.append(Character.toUpperCase(c));
+                        extractedAlphabets.add(
+                                String.valueOf(Character.toUpperCase(c))
+                        );
                     }
-                }
-                if (alphaPart.length() > 0) {
-                    extractedAlphabets.add(alphaPart.toString());
                 }
             } else {
                 // Mixed special + other - treat as special character if single char, else check
@@ -103,12 +101,16 @@ public class BfhlServiceImpl implements BfhlService {
                 .collect(Collectors.toList());
 
         List<String> oddNumbers = numericValues.stream()
-                .filter(n -> n.remainder(BigDecimal.valueOf(2)).abs().compareTo(BigDecimal.ZERO) != 0)
+                .filter(n -> n.scale() <= 0)
+                .filter(n -> n.remainder(BigDecimal.valueOf(2))
+                        .abs().compareTo(BigDecimal.ZERO) != 0)
                 .map(BigDecimal::toPlainString)
                 .collect(Collectors.toList());
 
         List<String> evenNumbers = numericValues.stream()
-                .filter(n -> n.remainder(BigDecimal.valueOf(2)).abs().compareTo(BigDecimal.ZERO) == 0)
+                .filter(n -> n.scale() <= 0)
+                .filter(n -> n.remainder(BigDecimal.valueOf(2))
+                        .abs().compareTo(BigDecimal.ZERO) == 0)
                 .map(BigDecimal::toPlainString)
                 .collect(Collectors.toList());
 
